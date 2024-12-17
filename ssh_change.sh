@@ -3,7 +3,7 @@
 
 sshd_path="/etc/ssh/sshd_config"
 sshd_path_2404="/lib/systemd/system/ssh.socket"
-new_port="41829"
+
 # Check if the script is run as root
 check_root() {
     if [ "$EUID" -ne 0 ]; then 
@@ -17,6 +17,18 @@ detect_os() {
     os_name=$(lsb_release -is 2>/dev/null || grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
     os_version=$(lsb_release -rs 2>/dev/null || grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
     echo -e "\e[34mDetected system: ${os_name} ${os_version}\e[0m"
+}
+
+manual_port() {
+    read -p "Enter a new port for SSH (1-65535): " ${new_port}
+
+    if ! [[ "${new_port}" =~ ^[0-9]+$ ]] || [ "${new_port}" -lt 1 ] || [ "${new_port}" -gt 65535 ]; then
+        echo -e "\e[31mError: Port must be a number between 1 and 65535.\e[0m"
+        exit 1
+    fi
+
+    check_port_availability "${new_port}"
+    echo "${new_port}"
 }
 
 # Get the current SSH port from a config file
@@ -54,8 +66,7 @@ reload_ssh_service() {
 
 # Check if the port is available
 check_port_availability() {
-    local port=$1
-    if ss -tuln | grep -q ":${port} "; then
+    if ss -tuln | grep -q ":${new_port}"; then
         echo -e "\e[31mError: Port ${port} is already in use by another process.\e[0m"
         exit 1
     fi
@@ -77,7 +88,7 @@ change_port_ubuntu_2404() {
 change_port_other_systems() {
     local current_port=$(get_current_port ${sshd_path})
     echo -e "\e[33mCurrent SSH port: ${current_port}\e[0m"
-            
+     
     change_port_in_config "${sshd_path}" "${new_port}"
     reload_ssh_service
     
@@ -106,7 +117,8 @@ change_sshdconfig() {
 main() {
     check_root
     detect_os
-
+    manual_port
+    
     case "${os_name}" in
         Ubuntu)
             if [[ "${os_version}" == "24.04" ]]; then
