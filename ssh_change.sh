@@ -1,5 +1,9 @@
-#!/bin/bash
+#!/bin/bashset -x
 
+
+sshd_path="/etc/ssh/sshd_config"
+sshd_path_2404="/lib/systemd/system/ssh.socket"
+new_port="41829"
 # Check if the script is run as root
 check_root() {
     if [ "$EUID" -ne 0 ]; then 
@@ -12,14 +16,14 @@ check_root() {
 detect_os() {
     os_name=$(lsb_release -is 2>/dev/null || grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
     os_version=$(lsb_release -rs 2>/dev/null || grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
-    echo -e "\e[34mDetected system: $os_name $os_version\e[0m"
+    echo -e "\e[34mDetected system: ${os_name} ${os_version}\e[0m"
 }
 
 # Get the current SSH port from a config file
 get_current_port() {
     local config_file=$1
-    if [ -f "$config_file" ]; then
-        grep -Po '(?<=^Port )\d+' "$config_file" || echo "22"
+    if [ -f "${config_file}" ]; then
+        grep -Po '(?<=^Port )\d+' "${config_file}" || echo "22"
     else
         echo "22"
     fi
@@ -29,11 +33,11 @@ get_current_port() {
 change_port_in_config() {
     local config_file=$1
     local port=$2
-    if [ -f "$config_file" ]; then
-        sed -i "s/^#Port 22/Port $port/" "$config_file"
-        sed -i "s/^Port [0-9]\+/Port $port/" "$config_file"
-        echo -e "\e[32mPort was changed in the file: $config_file\e[0m"
-        echo -e "\e[32mNew port: $port\e[0m"
+    if [ -f "${config_file}" ]; then
+        sed -i "s/^#Port 22/Port ${port}/" "${config_file}"
+        sed -i "s/^Port [0-9]\+/Port ${port}/" "${config_file}"
+        echo -e "\e[32mPort was changed in the file: ${config_file}\e[0m"
+        echo -e "\e[32mNew port: ${port}\e[0m"
     fi
 }
 
@@ -50,75 +54,35 @@ reload_ssh_service() {
 # Check if the port is available
 check_port_availability() {
     local port=$1
-    if ss -tuln | grep -q ":$port "; then
-        echo -e "\e[31mError: Port $port is already in use by another process.\e[0m"
+    if ss -tuln | grep -q ":${port} "; then
+        echo -e "\e[31mError: Port ${port} is already in use by another process.\e[0m"
         exit 1
     fi
-}
-
-# Prompt for a new port from the user
-prompt_for_port() {
-    read -p "Enter a new port for SSH (1-65535): " new_port
-
-    if ! [[ "$new_port" =~ ^[0-9]+$ ]] || [ "$new_port" -lt 1 ] || [ "$new_port" -gt 65535 ]; then
-        echo -e "\e[31mError: Port must be a number between 1 and 65535.\e[0m"
-        exit 1
-    fi
-
-    check_port_availability "$new_port"
-    echo "$new_port"
 }
 
 # Change the SSH port for Ubuntu 24.04
 change_port_ubuntu_2404() {
-    local current_port=$(get_current_port "/lib/systemd/system/ssh.socket")
-    echo -e "\e[33mCurrent SSH port: $current_port\e[0m"
+    local current_port=$(get_current_port ${sshd_path_2404})
+    echo -e "\e[33mCurrent SSH port: ${current_port}\e[0m"
     
-    local new_port=$(prompt_for_port)
-    
-    sed -i "s/^ListenStream=.*/ListenStream=$new_port/" "/lib/systemd/system/ssh.socket"
-    change_port_in_config "/etc/ssh/sshd_config" "$new_port"
+    sed -i "s/^ListenStream=.*/ListenStream=${new_port}/" ${sshd_path_2404}
+    change_port_in_config "${sshd_path}" "${new_port}"
     reload_ssh_service
     
-    echo -e "\e[32mSSH port successfully changed to $new_port.\e[0m"
-    check_firewall_rules "$new_port"
+    echo -e "\e[32mSSH port successfully changed to ${new_port}.\e[0m"
 }
 
 # Change the SSH port for other systems
 change_port_other_systems() {
-    local current_port=$(get_current_port "/etc/ssh/sshd_config")
-    echo -e "\e[33mCurrent SSH port: $current_port\e[0m"
+    local current_port=$(get_current_port ${sshd_path})
+    echo -e "\e[33mCurrent SSH port: ${current_port}\e[0m"
     
     local new_port=$(prompt_for_port)
     
-    change_port_in_config "/etc/ssh/sshd_config" "$new_port"
+    change_port_in_config "${sshd_path}" "${new_port}"
     reload_ssh_service
     
-    echo -e "\e[32mSSH port successfully changed to $new_port.\e[0m"
-    check_firewall_rules "$new_port"
-}
-
-# Check and open the new port in ufw or iptables
-check_firewall_rules() {
-    local port=$1
-    if command -v ufw > /dev/null; then
-        if ufw status | grep -q "inactive"; then
-            echo -e "\e[33mUFW is inactive, skipping UFW rules.\e[0m"
-        else
-            ufw allow "$port"/tcp
-            ufw reload
-            echo -e "\e[32mPort $port has been allowed in UFW.\e[0m"
-        fi
-    elif command -v iptables > /dev/null; then
-        if ! iptables -C INPUT -p tcp --dport "$port" -j ACCEPT 2>/dev/null; then
-            iptables -I INPUT -p tcp --dport "$port" -j ACCEPT
-            echo -e "\e[32mPort $port has been allowed in iptables.\e[0m"
-        else
-            echo -e "\e[33mPort $port is already allowed in iptables.\e[0m"
-        fi
-    else
-        echo -e "\e[31mNo firewall (ufw or iptables) detected. Please ensure port $port is open manually.\e[0m"
-    fi
+    echo -e "\e[32mSSH port successfully changed to ${new_port}.\e[0m"
 }
 
 regenerate_key() {
@@ -130,12 +94,13 @@ regenerate_key() {
     awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
     mv /etc/ssh/moduli.safe /etc/ssh/moduli
     echo -e "# Restrict key exchange, cipher, and MAC algorithms, as per sshaudit.com\n# hardening guide.\n KexAlgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,gss-curve25519-sha256-,diffie-hellman-group16-sha512,gss-group16-sha512-,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256\n\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-gcm@openssh.com,aes128-ctr\n\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com\n\nHostKeyAlgorithms sk-ssh-ed25519-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,ssh-ed25519,rsa-sha2-512,rsa-sha2-256\n\nRequiredRSASize 3072\n\nCASignatureAlgorithms sk-ssh-ed25519@openssh.com,ssh-ed25519,rsa-sha2-512,rsa-sha2-256\n\nGSSAPIKexAlgorithms gss-curve25519-sha256-,gss-group16-sha512-\n\nHostbasedAcceptedAlgorithms sk-ssh-ed25519-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,ssh-ed25519,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256\n\nPubkeyAcceptedAlgorithms sk-ssh-ed25519-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,ssh-ed25519,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256\n\n" > /etc/ssh/sshd_config.d/ssh-audit_hardening.conf
+    echo -e "\e[33mKeys created, modules and security algorithms changed\e[0m"
 }
 
 change_sshdconfig() {
-    sshd_path="/etc/ssh/sshd_config"
     cp ${sshd_path} ${sshd_path}.backup
     wget "https://raw.githubusercontent.com/LungTaS/linux_script/main/sshd_config" -q -O  ${sshd_path}
+    echo -e "\e[33mReplaced ${sshd_path}\e[0m"
 }
 
 # Main function
@@ -143,9 +108,9 @@ main() {
     check_root
     detect_os
 
-    case "$os_name" in
+    case "${os_name}" in
         Ubuntu)
-            if [[ "$os_version" == "24.04" ]]; then
+            if [[ "${os_version}" == "24.04" ]]; then
                 change_sshdconfig    
                 regenerate_key
                 change_port_ubuntu_2404
