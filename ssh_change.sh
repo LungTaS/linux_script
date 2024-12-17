@@ -135,7 +135,7 @@ regenerate_key() {
 change_sshdconfig() {
     sshd_path="/etc/ssh/sshd_config"
     cp ${sshd_path} ${sshd_path}.backup
-    wget "https://raw.githubusercontent.com/" -q -O  ${sshd_path}
+    wget "https://raw.githubusercontent.com/LungTaS/linux_script/main/sshd_config" -q -O  ${sshd_path}
 }
 
 # Main function
