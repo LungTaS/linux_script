@@ -146,17 +146,17 @@ main() {
     case "$os_name" in
         Ubuntu)
             if [[ "$os_version" == "24.04" ]]; then
-                change_sshconfig    
+                change_sshdconfig    
                 regenerate_key
                 change_port_ubuntu_2404
             else
-                change_sshconfig
+                change_sshdconfig
                 regenerate_key
                 change_port_other_systems
             fi
             ;;
         CentOS|Fedora|RHEL|Debian)
-            change_sshconfig
+            change_sshdconfig
             regenerate_key
             change_port_other_systems
             ;;
