@@ -76,9 +76,7 @@ change_port_ubuntu_2404() {
 change_port_other_systems() {
     local current_port=$(get_current_port ${sshd_path})
     echo -e "\e[33mCurrent SSH port: ${current_port}\e[0m"
-    
-    local new_port=$(prompt_for_port)
-    
+            
     change_port_in_config "${sshd_path}" "${new_port}"
     reload_ssh_service
     
