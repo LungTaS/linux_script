@@ -1,0 +1,38 @@
+Port 41829
+AddressFamily inet
+ListenAddress 0.0.0.0
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ed25519_key
+#LogLevel INFO
+LoginGraceTime 2m
+PermitRootLogin no
+StrictModes yes
+MaxAuthTries 6
+MaxSessions 8
+PubkeyAuthentication yes
+AuthorizedKeysFile     .ssh/authorized_keys .ssh/authorized_keys2
+#HostbasedAuthentication no
+#IgnoreUserKnownHosts no
+IgnoreRhosts yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+UsePAM yes
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding yes
+PermitTTY no
+PrintMotd no
+PrintLastLog yes
+#TCPKeepAlive yes
+PermitUserEnvironment no
+#Compression delayed
+#ClientAliveInterval 0
+#ClientAliveCountMax 3
+#UseDNS no
+#PidFile /run/sshd.pid
+#MaxStartups 10:30:100
+PermitTunnel no
+AcceptEnv LANG LC_*
+Subsystem       sftp    /usr/lib/openssh/sftp-server
