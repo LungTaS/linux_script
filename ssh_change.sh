@@ -20,18 +20,16 @@ detect_os() {
 }
 
 manual_port() {
-    read -p "Enter a new port for SSH (1-65535): " ${new_port}
+    read -p "Enter a new port for SSH (1-65535): " new_port
 
-    if ! [[ "${new_port}" =~ ^[0-9]+$ ]] || [ "${new_port}" -lt 1 ] || [ "${new_port}" -gt 65535 ]; then
-        echo "${new_port}"
-        exit 1
-    else
+    if ! [[ ${new_port} =~ ^[0-9]+$ ]] || [ ${new_port} -lt 1 ] || [ ${new_port} -gt 65535 ]; then
         echo -e "\e[31mError: Port must be a number between 1 and 65535.\e[0m"
-        exit 1    
+        exit 1
     fi
 
-    check_port_availability "${new_port}"
-    echo "${new_port}"
+    check_port_availability ${new_port}
+    echo -e "\e[33mEntered port ${new_port}\e[0m"
+}
 }
 
 # Get the current SSH port from a config file
