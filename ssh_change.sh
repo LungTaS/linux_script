@@ -26,10 +26,8 @@ manual_port() {
         echo -e "\e[31mError: Port must be a number between 1 and 65535.\e[0m"
         exit 1
     fi
-
-    check_port_availability ${new_port}
     echo -e "\e[33mEntered port ${new_port}\e[0m"
-}
+    check_port_availability ${new_port}
 }
 
 # Get the current SSH port from a config file
