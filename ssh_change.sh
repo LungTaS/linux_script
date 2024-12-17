@@ -20,6 +20,10 @@ detect_os() {
 }
 
 manual_port() {
+
+    local current_port=$(get_current_port ${sshd_path})
+    echo -e "\e[33mCurrent SSH port: ${current_port}\e[0m"
+    
     read -p "Enter a new port for SSH (1-65535): " new_port
 
     if ! [[ ${new_port} =~ ^[0-9]+$ ]] || [ ${new_port} -lt 1 ] || [ ${new_port} -gt 65535 ]; then
