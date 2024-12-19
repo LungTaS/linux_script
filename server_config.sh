@@ -25,7 +25,8 @@ fi
 cp -rf temp/* repo/
 rm -rf temp
 chmod +x -R repo
-cd repo
+# Переход в repo
+cd ./repo
 
 # Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
