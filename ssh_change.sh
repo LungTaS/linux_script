@@ -1,6 +1,4 @@
 #!/bin/bashset -x
-
-
 sshd_path="/etc/ssh/sshd_config"
 sshd_path_2404="/lib/systemd/system/ssh.socket"
 
@@ -121,7 +119,7 @@ main() {
     check_root
     detect_os
     manual_port
-    
+
     case "${os_name}" in
         Ubuntu)
             if [[ "${os_version}" == "24.04" ]]; then
