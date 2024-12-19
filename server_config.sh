@@ -11,7 +11,7 @@ PACKAGES=(
     "duf"
     "fd"
     "sudo"
-    "f"ail2ban"
+    "fail2ban"
 )
 # Проверка, запущен ли скрипт от имени root
 if [ "$EUID" -ne 0 ]; then
