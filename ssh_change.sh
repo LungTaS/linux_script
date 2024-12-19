@@ -109,7 +109,7 @@ regenerate_key() {
 
 change_sshdconfig() {
     cp ${sshd_path} ${sshd_path}.backup
-    cp ./sshd_config ${sshd_path}
+    wget -O ${sshd_path} https://raw.githubusercontent.com/LungTaS/linux_script/refs/heads/main/ssh_change.sh 
     echo -e "\e[32mReplaced ${sshd_path}\e[0m"
 }
 
@@ -139,8 +139,9 @@ main() {
         *)
             echo -e "\e[31mOperating system not supported by this script.\e[0m"
             exit 1
-            ;;
+            ;;  
     esac
+    echo -e "\e[31mDon't forget to add key before exit from ssh"
 }
 
 # Run the main function
