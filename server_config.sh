@@ -11,7 +11,7 @@ fi
     apt update
 
     # Установка sudo
-    apt install -y git
+    apt install -y git mc neofetch bat exa duf fd zsh sudo
 
 echo -e "\e[31mКлонирование репы\e[0m"
 git clone https://github.com/LungTaS/linux_script.git temp
@@ -27,31 +27,7 @@ rm -rf temp
 chmod +x -R repo
 cd repo
 
-# Проверка, установлен ли sudo
-if ! command -v sudo &> /dev/null; then
-    echo "sudo не установлен. Устанавливаем sudo..."
-
-    # Обновление списка пакетов
-    apt update
-
-    # Установка sudo
-    apt install -y sudo 
-
-    # Проверка успешности установки
-    if [ $? -eq 0 ]; then
-        echo "sudo успешно установлен."
-    else
-        echo "Ошибка при установке sudo."
-        exit 1
-    fi
-else
-    echo "sudo уже установлен."
-fi
-
-# Установка необходимых пакетов
-apt install -y mc neofetch bat exa duf fd zsh
-which zsh
-chsh -s $(which zsh)
+# Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 mv zsh-syntax-highlighting ~/.oh-my-zsh/plugins
