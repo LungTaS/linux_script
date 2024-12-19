@@ -6,12 +6,12 @@ PACKAGES=(
     "zsh"
     "mc"
     "neofetch"
-    bat
-    exa
-    duf
-    fd
-    sudo
-    fail2ban
+    "bat"
+    "exa"
+    "duf"
+    "fd"
+    "sudo"
+    "f"ail2ban"
 )
 # Проверка, запущен ли скрипт от имени root
 if [ "$EUID" -ne 0 ]; then
