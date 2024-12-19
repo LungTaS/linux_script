@@ -28,10 +28,10 @@ apt dist-upgrade
 install_package() {
     local package=$1
     if ! command -v ${package} &> /dev/null; then
-        echo "Устанавливаем пакет: ${package}"
+        echo -e "e[32mУстанавливаем пакет: ${package}\e[0m"
         sudo apt install -y ${package}
     else
-        echo "Пакет ${package} уже установлен, переходим к следующему."
+        echo -e "e[32mПакет ${package} уже установлен, переходим к следующему.\e[0m"
     fi
 }
 
@@ -40,7 +40,7 @@ for package in "${PACKAGES[@]}"; do
     install_package ${package}
 done
 
-echo "Установка завершена."
+echo -e "\e[32Установка завершена.\e[0m"
 
 echo -e "\e[32mКлонирование репы\e[0m"
 git clone https://github.com/LungTaS/linux_script.git temp
