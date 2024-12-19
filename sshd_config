@@ -22,7 +22,7 @@ UsePAM yes
 #AllowTcpForwarding yes
 GatewayPorts no
 X11Forwarding yes
-PermitTTY no
+PermitTTY yes
 PrintMotd no
 PrintLastLog yes
 #TCPKeepAlive yes
