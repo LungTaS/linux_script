@@ -1,5 +1,5 @@
-#!/bin/bash
-
+#!/bin/bashset -x
+REPO_DIR="$HOME/repo"
 # Проверка, запущен ли скрипт от имени root
 if [ "$EUID" -ne 0 ]; then
     echo -e "\e[31mPlease run the script as root (sudo).\e[0m"
@@ -8,25 +8,28 @@ fi
 
 # Ставим git
 # Обновление списка пакетов
-    apt update
-
-    # Установка sudo
-    apt install -y git mc neofetch bat exa duf fd zsh sudo
+apt update
+apt upgrade -y
+apt autoremove
+apt dist-upgrade 
+# Установка sudo
+apt install -y git zsh mc neofetch bat exa duf fd sudo fail2ban
 
 echo -e "\e[31mКлонирование репы\e[0m"
 git clone https://github.com/LungTaS/linux_script.git temp
-if [ ! -d "repo" ]; then
-  mkdir repo
+
+if [ ! -d ${REPO_DIR} ]; then
+  mkdir ${REPO_DIR}
   echo "Папка repo создана."
 else
   echo "Папка repo уже существует."
 fi
 # копирование содержимого временной директории и удаление
-cp -rf temp/* repo/
+cp -rf temp/* ${REPO_DIR}
 rm -rf temp
-chmod +x -R repo
+chmod +x -R ${REPO_DIR}
 # Переход в repo
-cd ./repo
+cd ${REPO_DIR} || { echo "Не удалось перейти в каталог $REPO_DIR"; exit 1; }
 
 # Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
