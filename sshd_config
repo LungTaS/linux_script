@@ -11,7 +11,7 @@ MaxAuthTries 6
 MaxSessions 8
 PubkeyAuthentication yes
 AuthorizedKeysFile     .ssh/authorized_keys .ssh/authorized_keys2
-#HostbasedAuthentication no
+HostbasedAuthentication no
 #IgnoreUserKnownHosts no
 IgnoreRhosts yes
 PasswordAuthentication no
