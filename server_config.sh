@@ -6,6 +6,27 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Ставим git
+# Обновление списка пакетов
+    apt update
+
+    # Установка sudo
+    apt install -y git
+
+echo -e "\e[31mКлонирование репы\e[0m"
+git clone https://github.com/LungTaS/linux_script.git temp
+if [ ! -d "repo" ]; then
+  mkdir repo
+  echo "Папка repo создана."
+else
+  echo "Папка repo уже существует."
+fi
+# копирование содержимого временной директории и удаление
+cp -rf temp/* repo/
+rm -rf temp
+chmod +x -R repo
+cd repo
+
 # Проверка, установлен ли sudo
 if ! command -v sudo &> /dev/null; then
     echo "sudo не установлен. Устанавливаем sudo..."
@@ -28,7 +49,7 @@ else
 fi
 
 # Установка необходимых пакетов
-apt install -y mc git neofetch bat exa duf fd zsh
+apt install -y mc neofetch bat exa duf fd zsh
 which zsh
 chsh -s $(which zsh)
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -93,3 +114,7 @@ chmod 600 /home/${username}/.ssh/authorized_keys
 chown -R ${username}:${username} /home/${username}/.ssh
 
 echo -e "\e[32mDirectory and authorized_keys file created successfully with the correct permissions.\e[0m"
+
+echo -e "\e[32mНастройка ssh\e[0m"
+./ssh_change.sh
+echo -e "\e[32mНастройка ssh произведены\e[0m"
