@@ -29,7 +29,7 @@ install_package() {
     local package=$1
     if ! command -v ${package} &> /dev/null; then
         echo "Устанавливаем пакет: ${package}"
-        sudo apt-get install -y {$package}
+        sudo apt install -y ${package}
     else
         echo "Пакет ${package} уже установлен, переходим к следующему."
     fi
