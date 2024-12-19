@@ -3,7 +3,7 @@
 
 sshd_path="/etc/ssh/sshd_config"
 sshd_path_2404="/lib/systemd/system/ssh.socket"
-
+new_port=$(manual_port)
 # Check if the script is run as root
 check_root() {
     if [ "$EUID" -ne 0 ]; then 
@@ -120,8 +120,7 @@ change_sshdconfig() {
 main() {
     check_root
     detect_os
-    manual_port
-
+    
     case "${os_name}" in
         Ubuntu)
             if [[ "${os_version}" == "24.04" ]]; then

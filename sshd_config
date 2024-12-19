@@ -1,4 +1,4 @@
-Port 41829
+Port 2222
 AddressFamily inet
 ListenAddress 0.0.0.0
 #HostKey /etc/ssh/ssh_host_rsa_key
