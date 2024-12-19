@@ -1,21 +1,48 @@
 #!/bin/bashset -x
 REPO_DIR="$HOME/repo"
+PACKAGES=(
+    "git"
+    "curl"
+    "zsh"
+    "mc"
+    "neofetch"
+    bat
+    exa
+    duf
+    fd
+    sudo
+    fail2ban
+)
 # Проверка, запущен ли скрипт от имени root
 if [ "$EUID" -ne 0 ]; then
     echo -e "\e[31mPlease run the script as root (sudo).\e[0m"
     exit 1
 fi
 
-# Ставим git
 # Обновление списка пакетов
 apt update
 apt upgrade -y
 apt autoremove
 apt dist-upgrade 
-# Установка sudo
-apt install -y git zsh mc neofetch bat exa duf fd sudo fail2ban
+# Функция для установки пакета
+install_package() {
+    local package=$1
+    if ! command -v ${package} &> /dev/null; then
+        echo "Устанавливаем пакет: ${package}"
+        sudo apt-get install -y {$package}
+    else
+        echo "Пакет ${package} уже установлен, переходим к следующему."
+    fi
+}
 
-echo -e "\e[31mКлонирование репы\e[0m"
+# Установка пакетов
+for package in "${PACKAGES[@]}"; do
+    install_package ${package}
+done
+
+echo "Установка завершена."
+
+echo -e "\e[32mКлонирование репы\e[0m"
 git clone https://github.com/LungTaS/linux_script.git temp
 
 if [ ! -d ${REPO_DIR} ]; then
@@ -29,14 +56,14 @@ cp -rf temp/* ${REPO_DIR}
 rm -rf temp
 chmod +x -R ${REPO_DIR}
 # Переход в repo
-cd ${REPO_DIR} || { echo "Не удалось перейти в каталог $REPO_DIR"; exit 1; }
+cd ${REPO_DIR} || { echo -e "\e[31mНе удалось перейти в каталог ${REPO_DIR}\e[0m"; exit 1; }
 
 # Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-mv zsh-syntax-highlighting ~/.oh-my-zsh/plugins
+mv ${REPO_DIR}/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions
-mv zsh-autosuggestions ~/.oh-my-zsh/custom/plugins
+mv ${REPO_DIR}/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins
 
 # Путь к файлу .zshrc
 ZSHRC_FILE="$HOME/.zshrc"
