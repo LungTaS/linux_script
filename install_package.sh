@@ -31,10 +31,10 @@ apt dist-upgrade
 install_package() {
     local package=$1
     if ! command -v ${package} &> /dev/null; then
-        echo -e "e[32mУстанавливаем пакет: ${package}\e[0m"
+        echo -e "\e[32mУстанавливаем пакет: ${package}\e[0m"
         sudo apt install -y ${package}
     else
-        echo -e "e[33mПакет ${package} уже установлен, переходим к следующему.\e[0m"
+        echo -e "\e[33mПакет ${package} уже установлен, переходим к следующему.\e[0m"
     fi
 }
 
