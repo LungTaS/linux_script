@@ -63,7 +63,7 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 
 #Set "exa" instead of "ls"
-alias ls='exa -lah --color=always --group-directories-first'
+alias ls='exa -lahg --color=always --group-directories-first'
 alias la='exa -a --color=always --group-directories-first'
 alias ll='exa -l --color=always --group-directories-first'
 alias lt='exa -aT --color=always --group-directories-first'

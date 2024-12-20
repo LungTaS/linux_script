@@ -1,4 +1,4 @@
-#!/bin/bashset -x
+#!/bin/bash
 sshd_path="/etc/ssh/sshd_config"
 sshd_path_2404="/lib/systemd/system/ssh.socket"
 

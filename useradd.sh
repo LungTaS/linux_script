@@ -6,25 +6,6 @@ check_root() {
     fi
 }
 
-if [ ! -d ${HOME}/.ssh ]; then
-  mkdir ${HOME}/.ssh
-  echo -e "\e[32mПапка .ssh создана.\e[0m"
-else
-  echo -e "\e[33mПапка .ssh уже существует.\e[0m"
-fi
-
-# Установка прав на каталог .ssh
-chmod 700 ${HOME}/.ssh
-
-# Создание файла authorized_keys
-touch ${HOME}/.ssh/authorized_keys
-
-# Установка прав на файл authorized_keys
-chmod 600 ${HOME}/.ssh/authorized_keys
-
-# Установка владельца для каталога и файла
-chown -R root:root ${HOME}/.ssh
-
 # Запрос имени нового пользователя
 read -p "Enter the username for the new user: " username
 
