@@ -109,7 +109,7 @@ regenerate_key() {
 
 change_sshdconfig() {
     cp ${sshd_path} ${sshd_path}.backup
-    wget -O ${sshd_path} https://raw.githubusercontent.com/LungTaS/linux_script/refs/heads/main/ssh_change.sh 
+    wget -O ${sshd_path} https://raw.githubusercontent.com/LungTaS/linux_script/refs/heads/main/sshd_config
     echo -e "\e[32mReplaced ${sshd_path}\e[0m"
 }
 
