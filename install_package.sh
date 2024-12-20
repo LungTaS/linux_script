@@ -5,7 +5,7 @@ PACKAGES=(
     "zsh"
     "mc"
     "neofetch"
-    "batcat"
+    "bat"
     "exa"
     "duf"
     "sudo"
