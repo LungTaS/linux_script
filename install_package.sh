@@ -56,12 +56,13 @@ check_zsh() {
     fi
 }
 check_zsh
-# Настройка zsh
+# Настройка oh-my-zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-#git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-#mv -rf ${REPO_DIR}/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/plugins
-#git clone https://github.com/zsh-users/zsh-autosuggestions
-#mv -rf ${REPO_DIR}/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+mv -rf ${HOME}/repo/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions
+mv -rf ${HOME}/repo/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins
 
 # Путь к файлу .zshrc
 ZSHRC_FILE="$HOME/.zshrc"
