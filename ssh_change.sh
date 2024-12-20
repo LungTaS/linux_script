@@ -131,7 +131,7 @@ main() {
                 change_port_other_systems
             fi
             ;;
-        CentOS|Fedora|RHEL|Debian)
+        CentOS|Fedora|RHEL|Debian|debian)
             change_sshdconfig
             regenerate_key
             change_port_other_systems
