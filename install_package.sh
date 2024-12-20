@@ -32,7 +32,7 @@ install_package() {
     local package=$1
     if ! command -v ${package} &> /dev/null; then
         echo -e "\e[32mУстанавливаем пакет: ${package}\e[0m"
-        sudo apt install -y ${package}
+        apt install -y ${package}
     else
         echo -e "\e[33mПакет ${package} уже установлен, переходим к следующему.\e[0m"
     fi
@@ -45,6 +45,17 @@ done
 
 echo -e "\e[32Установка завершена.\e[0m"
 
+# install zsh
+check_zsh() {
+    local package="zsh"
+    if ! command -v ${package} &> /dev/null; then
+        echo -e "\e[32mНе установлен ${package}, устанавливаем\e[0m"
+        apt install -y ${package}
+    else
+        echo -e "\e[33mПакет ${package} уже установлен.\e[0m"
+    fi
+}
+check_zsh
 # Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 #git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
