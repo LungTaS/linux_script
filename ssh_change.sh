@@ -12,7 +12,7 @@ check_root() {
 
 # Detect OS and version
 detect_os() {
-    os_name=$(lsb_release -is 2>/dev/null || grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    os_name=$(lsb_release -is 2>/dev/null || grep '^NAME=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | sed 's/ GNU\/Linux//')
     os_version=$(lsb_release -rs 2>/dev/null || grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
     echo -e "\e[34mDetected system: ${os_name} ${os_version}\e[0m"
 }
@@ -131,7 +131,7 @@ main() {
                 change_port_other_systems
             fi
             ;;
-        CentOS|Fedora|RHEL|Debian|debian)
+        CentOS|Fedora|RHEL|Debian)
             change_sshdconfig
             regenerate_key
             change_port_other_systems
