@@ -1,5 +1,4 @@
 #!/bin/bashset -x
-REPO_DIR="$HOME/repo"
 PACKAGES=(
     "git"
     "curl"
@@ -14,6 +13,8 @@ PACKAGES=(
     "btop"
     "tldr"
     "ripgrep"
+    "ufw"
+    
 )
 # Проверка, запущен ли скрипт от имени root
 if [ "$EUID" -ne 0 ]; then
@@ -43,22 +44,6 @@ for package in "${PACKAGES[@]}"; do
 done
 
 echo -e "\e[32Установка завершена.\e[0m"
-
-echo -e "\e[32mКлонирование репы\e[0m"
-git clone https://github.com/LungTaS/linux_script.git temp
-
-if [ ! -d ${REPO_DIR} ]; then
-  mkdir ${REPO_DIR}
-  echo -e "\e[32mПапка repo создана.\e[0m"
-else
-  echo -e "\e[33mПапка repo уже существует.\e[0m"
-fi
-# копирование содержимого временной директории и удаление
-cp -rf temp/* ${REPO_DIR}
-rm -rf temp
-chmod +x -R ${REPO_DIR}
-# Переход в repo
-cd ${REPO_DIR} || { echo -e "\e[31mНе удалось перейти в каталог ${REPO_DIR}\e[0m"; exit 1; }
 
 # Настройка zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
