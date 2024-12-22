@@ -61,9 +61,9 @@ check_zsh
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git 
-mv ${HOME}/repo/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/plugins
+mv ${HOME}/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions
-mv ${HOME}/repo/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins
+mv ${HOME}/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins
 
 # Путь к файлу .zshrc
 ZSHRC_FILE="$HOME/.zshrc"
