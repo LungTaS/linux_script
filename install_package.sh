@@ -25,8 +25,9 @@ fi
 # Обновление списка пакетов
 apt update
 apt upgrade -y
-apt autoremove
-apt dist-upgrade 
+apt autoremove -y
+apt dist-upgrade -y
+
 # Функция для установки пакета
 install_package() {
     local package=$1
